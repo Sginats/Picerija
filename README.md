@@ -1,6 +1,6 @@
 # 🍕 OOP Picērijas Projekts
 
-![Pizza cover](https://github.com/user-attachments/assets/e54c8fc6-abde-4d2a-b565-4960ccac10f1)
+![Pizza cover](https://github.com/user-attachments/assets/c03c334e-0cbf-4c66-adfb-68fd63ffa7e4)
 
 **Par programmu:**
 Picērijas pasūtījumu sistēma, kas ļauj izveidot picas, izvēlēties to izmērus, piedevas un mērces, apstrādāt piegādes informāciju, kā arī saglabāt un nolasīt pasūtījumus no faila.
