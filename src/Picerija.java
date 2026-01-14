@@ -13,6 +13,7 @@
 - [ ]Apstrādāt kļūdas un nepareizas lietotāja darbības
  */
 
+
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -20,7 +21,9 @@ import javax.swing.JOptionPane;
 public class Picerija {
 	static ArrayList<Pica> pasutijumi = new ArrayList<>();
 	public static void main(String[] args) {
+
 		pasutijumi = DarbsArFailu.nolasit();
+
 		String izvelne;
 		String[] darbibas = {
 		"Picas izveide",
@@ -48,6 +51,7 @@ public class Picerija {
 			    
 			        break;
 			    case "Piegādes informācijas izveide":
+
                     break;
                  case "Piegādes informācijas labošana":
                 	                         

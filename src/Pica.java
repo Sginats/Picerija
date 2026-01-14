@@ -12,9 +12,11 @@
 - [ ]Izveidot lietotāja saskarni ar JFrame
 - [ ]Apstrādāt kļūdas un nepareizas lietotāja darbības
  */
+
 import javax.swing.JOptionPane;
 import java.io.*;
 import java.util.ArrayList;
+
 public class Pica {
 	String vards;
     String adrese;
