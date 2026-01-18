@@ -27,29 +27,38 @@ import javax.swing.JOptionPane;
 public class DarbsArFailu {
 	private static final String FAILA_NOSAUKUMS = "pasutijumi.txt";
 
-    public static void saglabat(ArrayList<Pica> pasutijumi) {
+	public static void saglabat(ArrayList<Pica> pasutijumi) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FAILA_NOSAUKUMS))) {
             for (Pica p : pasutijumi) {
                 writer.write(p.failaFormata());
                 writer.newLine();
             }
-            JOptionPane.showMessageDialog(null, "Dati veiksmīgi saglabāti failā!");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Kļūda saglabājot failu: " + e.getMessage());
         }
     }
-    public static ArrayList<Pica> nolasit() {
+	public static ArrayList<Pica> nolasit() {
         ArrayList<Pica> pasutijumi = new ArrayList<>();
         File file = new File(FAILA_NOSAUKUMS);
-        if (!file.exists()) return pasutijumi;
-
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return pasutijumi;
+        }
         try (BufferedReader reader = new BufferedReader(new FileReader(FAILA_NOSAUKUMS))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
                 if (parts.length == 7) {
-                    double cena = Double.parseDouble(parts[6]);
-                    pasutijumi.add(new Pica(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], cena));
+                    try {
+                        double cena = Double.parseDouble(parts[6]);
+                        pasutijumi.add(new Pica(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], cena));
+                    } catch (NumberFormatException nfe) {
+                        System.out.println("Kļūdaini dati failā (cena): " + line);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -58,4 +67,3 @@ public class DarbsArFailu {
         return pasutijumi;
     }
 }
-
