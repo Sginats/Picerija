@@ -1,1 +1,2 @@
 Artūrs;Artūra pagrabs;12345678;Mazs-15 cm;Senes,Bekons,Ananāss;BBQ;Fanta;12.5
+Pelmenis;123;12345678;Liels-45 cm;Salami,Paprika,Sipoli,Ananāss;Majonezes;Coca-Cola;17.5

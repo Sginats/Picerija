@@ -15,13 +15,13 @@ import javax.sound.sampled.*;
 public class Picerija extends JFrame implements ActionListener {
     
     /**
-	 * Ģenerētais serialVersionUID
+	 * Ģenerēts serialVersionUID
 	 */
-	private static final long serialVersionUID = -8572302226688599272L;
-
+	private static final long serialVersionUID = 6723100318560684206L;
 	static ArrayList<Pica> pasutijumi = new ArrayList<>();
+    private boolean vaiPiegade;
 
-    private JComboBox<String> cbIzmers, cbMerce, cbDzeriens;
+    private JComboBox<String> cbIzmers, cbMerce, cbDzeriens, cbUzkodas;
     private ArrayList<JCheckBox> piedevuCheckboxes;
     private JTextField tfVards, tfAdrese, tfTalrunis;
     private JTable table;
@@ -35,12 +35,18 @@ public class Picerija extends JFrame implements ActionListener {
     private final Font FONT_LABEL = new Font("Segoe UI", Font.BOLD, 12);
     private final Font FONT_INPUT = new Font("Segoe UI", Font.PLAIN, 13);
 
-    public Picerija() {
-        setTitle("Picerija");
-        setSize(1280, 800);
+    public Picerija(boolean vaiPiegade) {
+        this.vaiPiegade = vaiPiegade;
+
+        String rezims = vaiPiegade ? "PIEGADE" : "UZ VIETAS";
+        setTitle("Picerija - Vadibas Panelis (" + rezims + ")");
+        setSize(1280, 850);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+
+        URL iconURL = getClass().getResource("/bildes/logo.png");
+        if (iconURL != null) setIconImage(new ImageIcon(iconURL).getImage());
 
         JPanel sidebar = new JPanel(new GridBagLayout());
         sidebar.setBackground(SIDEBAR_BG);
@@ -51,12 +57,21 @@ public class Picerija extends JFrame implements ActionListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         gbc.gridx = 0;
-        
         int row = 0;
 
-        JLabel lblTitle = new JLabel("JAUNS PASUTIJUMS");
+        if (iconURL != null) {
+            ImageIcon logoIcon = new ImageIcon(new ImageIcon(iconURL).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
+            JLabel lblLogo = new JLabel(logoIcon);
+            lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
+            gbc.gridy = row++;
+            gbc.insets = new Insets(0, 0, 15, 0);
+            sidebar.add(lblLogo, gbc);
+        }
+
+        JLabel lblTitle = new JLabel("JAUNS (" + rezims + ")");
         lblTitle.setForeground(ACCENT_COLOR);
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = row++;
         gbc.insets = new Insets(0, 0, 25, 0);
         gbc.weighty = 0;
@@ -76,8 +91,11 @@ public class Picerija extends JFrame implements ActionListener {
         cbDzeriens = new JComboBox<>(new String[]{"Nav", "Coca-Cola", "Fanta", "Sprite", "Udens"});
         addSidebarComponent(sidebar, gbc, row++, cbDzeriens);
 
+        addSidebarLabel(sidebar, gbc, row++, "Uzkodas (+3.00 EUR):");
+        cbUzkodas = new JComboBox<>(new String[]{"Nav", "Fri Kartupeli", "Nageti", "Sipolu Gredzeni", "Kiploku Grauzdini"});
+        addSidebarComponent(sidebar, gbc, row++, cbUzkodas);
+
         addSidebarLabel(sidebar, gbc, row++, "Piedevas:");
-        
         JPanel pnlPiedevas = new JPanel(new GridLayout(3, 3, 5, 5)); 
         pnlPiedevas.setBackground(SIDEBAR_BG);
         String[] piedevuVarianti = {"Siers", "Senes", "Bekons", "Salami", "Paprika", "Sipoli", "Ananāss"};
@@ -98,13 +116,22 @@ public class Picerija extends JFrame implements ActionListener {
         tfVards = new JTextField();
         addSidebarComponent(sidebar, gbc, row++, tfVards);
 
-        addSidebarLabel(sidebar, gbc, row++, "Adrese:");
-        tfAdrese = new JTextField();
-        addSidebarComponent(sidebar, gbc, row++, tfAdrese);
+        // --- ADRESE UN TALRUNIS ---
+        // Inicializējam ar "-" pēc noklusējuma (lai objekta izveide nestrādātu kļūdaini)
+        tfAdrese = new JTextField("-");
+        tfTalrunis = new JTextField("-");
 
-        addSidebarLabel(sidebar, gbc, row++, "Talrunis:");
-        tfTalrunis = new JTextField();
-        addSidebarComponent(sidebar, gbc, row++, tfTalrunis);
+        // Pievienojam vizuāli TIKAI tad, ja ir piegāde
+        if (vaiPiegade) {
+            tfAdrese.setText(""); // Notīrām noklusējuma vērtību ievadei
+            tfTalrunis.setText("");
+
+            addSidebarLabel(sidebar, gbc, row++, "Adrese:");
+            addSidebarComponent(sidebar, gbc, row++, tfAdrese);
+
+            addSidebarLabel(sidebar, gbc, row++, "Talrunis:");
+            addSidebarComponent(sidebar, gbc, row++, tfTalrunis);
+        }
 
         btnPievienot = new JButton("APSTIPRINAT PASUTIJUMU");
         styleButton(btnPievienot, ACCENT_COLOR);
@@ -116,8 +143,8 @@ public class Picerija extends JFrame implements ActionListener {
         gbc.weighty = 1.0; 
         sidebar.add(new JLabel(), gbc);
 
-        btnIziet = new JButton("Iziet");
-        styleButton(btnIziet, new Color(220, 53, 69));
+        btnIziet = new JButton("ATPAKAL");
+        styleButton(btnIziet, new Color(52, 58, 64));
         gbc.gridy = row++;
         gbc.weighty = 0;
         gbc.insets = new Insets(0, 0, 0, 0);
@@ -136,13 +163,10 @@ public class Picerija extends JFrame implements ActionListener {
 
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         actionPanel.setOpaque(false);
-        
         btnDzest = new JButton("Dzest");
         styleButton(btnDzest, new Color(220, 53, 69));
-        
         btnSaglabat = new JButton("Saglabat");
         styleButton(btnSaglabat, new Color(25, 135, 84));
-        
         btnSkatit = new JButton("Ieladet");
         styleButton(btnSkatit, new Color(13, 202, 240));
 
@@ -150,10 +174,9 @@ public class Picerija extends JFrame implements ActionListener {
         actionPanel.add(btnSkatit);
         actionPanel.add(btnSaglabat);
         headerPanel.add(actionPanel, BorderLayout.EAST);
-
         contentPanel.add(headerPanel, BorderLayout.NORTH);
 
-        String[] columns = {"Klients", "Adrese", "Tel", "Pica", "Merce", "Dzeriens", "Piedevas", "Cena"};
+        String[] columns = {"ID", "Klients", "Adrese", "Tel", "Pica", "Merce", "Dzeriens", "Uzkodas", "Piedevas", "Cena"};
         tableModel = new DefaultTableModel(columns, 0);
         table = new JTable(tableModel);
         table.setRowHeight(30);
@@ -161,6 +184,9 @@ public class Picerija extends JFrame implements ActionListener {
         table.setShowGrid(false);
         table.setIntercellSpacing(new Dimension(0, 0));
         
+        table.getColumnModel().getColumn(0).setPreferredWidth(40);
+        table.getColumnModel().getColumn(0).setMaxWidth(60);
+
         JTableHeader header = table.getTableHeader();
         header.setFont(new Font("Segoe UI", Font.BOLD, 13));
         header.setBackground(Color.WHITE);
@@ -178,7 +204,6 @@ public class Picerija extends JFrame implements ActionListener {
         tableCard.add(scrollPane, BorderLayout.CENTER);
 
         contentPanel.add(tableCard, BorderLayout.CENTER);
-
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
 
@@ -227,89 +252,99 @@ public class Picerija extends JFrame implements ActionListener {
             atjaunotTabulu();
             JOptionPane.showMessageDialog(this, "Dati atjaunoti no faila!");
         } else if (e.getSource() == btnIziet) {
-            System.exit(0);
+            new IzvelesEkrans().setVisible(true);
+            dispose();
         } else if (e.getSource() == btnDzest) {
             dzestPasutijumu();
         }
     }
 
     private void registretPasutijumu() {
+        String vards = tfVards.getText();
+        
+        if (vaiPiegade) {
+            if (vards.isEmpty() || tfAdrese.getText().isEmpty() || tfTalrunis.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Aizpildiet visus laukus!", "Kluda", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!tfTalrunis.getText().matches("\\d+") || tfTalrunis.getText().length() < 8) {
+                JOptionPane.showMessageDialog(this, "Talrunim jabut cipariem (min 8)!", "Kluda", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } else {
+            if (vards.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ludzu ievadiet klienta vardu!", "Kluda", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
         String izmers = (String) cbIzmers.getSelectedItem();
         String merce = (String) cbMerce.getSelectedItem();
         String dzeriens = (String) cbDzeriens.getSelectedItem();
-        String vards = tfVards.getText();
-        String adrese = tfAdrese.getText();
-        String talrunis = tfTalrunis.getText();
-
+        String uzkodas = (String) cbUzkodas.getSelectedItem();
+        
         List<String> selectedValues = new ArrayList<>();
         boolean hasPineapple = false;
-
         for (JCheckBox cb : piedevuCheckboxes) {
             if (cb.isSelected()) {
                 selectedValues.add(cb.getText());
-                if (cb.getText().equals("Ananāss")) {
-                    hasPineapple = true;
-                }
+                if (cb.getText().equals("Ananāss")) hasPineapple = true;
             }
         }
-        
         String piedevas = String.join(",", selectedValues);
-
-        if (vards.isEmpty() || adrese.isEmpty() || talrunis.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ludzu aizpildiet visus laukus!", "Kluda", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (!talrunis.matches("\\d+") || talrunis.length() < 8) {
-            JOptionPane.showMessageDialog(this, "Talrunim jasastav tikai no cipariem (min 8)!", "Kluda", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
         if (piedevas.isEmpty()) piedevas = "Nav";
 
-        if (hasPineapple) {
-            triggerEasterEgg();
+        if (hasPineapple) triggerEasterEgg();
+
+        int newId = 1;
+        if (!pasutijumi.isEmpty()) {
+            int maxId = 0;
+            for(Pica p : pasutijumi) {
+                if(p.getId() > maxId) maxId = p.getId();
+            }
+            newId = maxId + 1;
         }
 
-        Pica jaunaPica = new Pica(vards, adrese, talrunis, izmers, piedevas, merce, dzeriens);
+        Pica jaunaPica = new Pica(newId, vards, tfAdrese.getText(), tfTalrunis.getText(), izmers, piedevas, merce, dzeriens, uzkodas);
         jaunaPica.aprekinatCenu();
 
         pasutijumi.add(jaunaPica);
         atjaunotTabulu();
         
-        for (JCheckBox cb : piedevuCheckboxes) cb.setSelected(false);
+        if(vaiPiegade) {
+            tfAdrese.setText("");
+            tfTalrunis.setText("");
+        }
         tfVards.setText("");
-        tfAdrese.setText("");
-        tfTalrunis.setText("");
+        for (JCheckBox cb : piedevuCheckboxes) cb.setSelected(false);
         cbDzeriens.setSelectedIndex(0);
+        cbUzkodas.setSelectedIndex(0);
         
-        JOptionPane.showMessageDialog(this, "Pasutijums pievienots! Summa: " + jaunaPica.getCena() + " EUR");
+        JOptionPane.showMessageDialog(this, "Pasutijums ID: " + newId + " pievienots!");
     }
 
     private void dzestPasutijumu() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Izvelies pasutijumu, ko dzest!", "Kluda", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Izvelies rindu!", "Kluda", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
-        int response = JOptionPane.showConfirmDialog(this, "Vai tiesam dzest so pasutijumu?", "Apstiprinat", JOptionPane.YES_NO_OPTION);
-        if (response == JOptionPane.YES_OPTION) {
-            pasutijumi.remove(selectedRow);
-            tableModel.removeRow(selectedRow);
-        }
+        pasutijumi.remove(selectedRow);
+        tableModel.removeRow(selectedRow);
     }
 
     private void atjaunotTabulu() {
         tableModel.setRowCount(0);
         for (Pica p : pasutijumi) {
             tableModel.addRow(new Object[]{
+                p.getId(),
                 p.getVards(),
                 p.getAdrese(),
                 p.getTalrunis(),
                 p.getIzmers(),
                 p.getMerce(),
                 p.getDzeriens(),
+                p.getUzkodas(),
                 p.getPiedevas(),
                 String.format("%.2f", p.getCena()) + " EUR"
             });
@@ -336,26 +371,10 @@ public class Picerija extends JFrame implements ActionListener {
 
         URL imgURL = getClass().getResource("/bildes/shower.gif");
         ImageIcon icon = (imgURL != null) ? new ImageIcon(imgURL) : null;
-        
         if (icon != null && icon.getImageLoadStatus() != MediaTracker.ERRORED) {
              JOptionPane.showMessageDialog(this, "", "Crime against Pizza", JOptionPane.INFORMATION_MESSAGE, icon);
         } else {
              JOptionPane.showMessageDialog(this, "WHY PINEAPPLE??", "Crime against Pizza", JOptionPane.WARNING_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {}
-
-        SwingUtilities.invokeLater(() -> {
-            new Picerija().setVisible(true);
-        });
     }
 }

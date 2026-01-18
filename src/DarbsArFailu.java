@@ -11,7 +11,6 @@ public class DarbsArFailu {
                 writer.write(p.failaFormata());
                 writer.newLine();
             }
-            JOptionPane.showMessageDialog(null, "Dati veiksmigi saglabati faila!");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Kluda saglabajot failu: " + e.getMessage());
         }
@@ -27,12 +26,13 @@ public class DarbsArFailu {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
                 
-                if (parts.length == 8) {
+                if (parts.length == 10) {
                     try {
-                        double cena = Double.parseDouble(parts[7]);
-                        pasutijumi.add(new Pica(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], cena));
+                        int id = Integer.parseInt(parts[0]);
+                        double cena = Double.parseDouble(parts[9]);
+                        pasutijumi.add(new Pica(id, parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], cena));
                     } catch (NumberFormatException e) {
-                        System.out.println("Kluda lasot cenu: " + line);
+                        System.out.println("Kluda lasot datus: " + line);
                     }
                 }
             }
