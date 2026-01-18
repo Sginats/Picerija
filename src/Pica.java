@@ -12,19 +12,15 @@
 - [ ]Izveidot lietotāja saskarni ar JFrame
 - [ ]Apstrādāt kļūdas un nepareizas lietotāja darbības
  */
-
-import javax.swing.JOptionPane;
-import java.io.*;
-import java.util.ArrayList;
-
 public class Pica {
-	String vards;
-    String adrese;
-    String talrunis;
-    String izmers;     // "Mazs-15 cm", "Vidējs-30 cm", "Liels-45 cm"
-    String piedevas;
-    String merce;
-    double cena;
+    private String vards;
+    private String adrese;
+    private String talrunis;
+    private String izmers;   
+    private String piedevas;
+    private String merce;
+    private double cena;
+   
     public Pica(String vards, String adrese, String talrunis, String izmers, String piedevas, String merce, double cena) {
         this.vards = vards;
         this.adrese = adrese;
@@ -34,15 +30,45 @@ public class Pica {
         this.merce = merce;
         this.cena = cena;
     }
-    public String sanemtInfo() {
-        return "Klients: " + vards + " | Tālr: " + talrunis + "\n" +
-               "Adrese: " + adrese + "\n" +
-               "Pica: " + izmers + " | Mērce: " + merce + "\n" +
-               "Piedevas: " + piedevas + "\n" +
-               "Summa: " + String.format("%.2f", cena) + " EUR\n" +
-               "------------------------------";
+    
+    public void setKlientInfo(String vards, String adrese, String talrunis) {
+        this.vards = vards;
+        this.adrese = adrese;
+        this.talrunis = talrunis;
     }
-    public String failaFormata() {
-        return vards + ";" + adrese + ";" + talrunis + ";" + izmers + ";" + piedevas + ";" + merce + ";" + cena;
+    public void aprekinatCenu() {
+        double summa = 0.0;
+
+        if (izmers.startsWith("Mazs")) summa += 6.0;
+        else if (izmers.startsWith("Vidējs")) summa += 8.0;
+        else if (izmers.startsWith("Liels")) summa += 10.0;
+
+        summa += 2.0;
+
+        if (piedevas != null && !piedevas.isEmpty() && !piedevas.equalsIgnoreCase("nav")) {
+            String[] piedevuSaraksts = piedevas.split(",");
+            summa += piedevuSaraksts.length * 1.0;
+        }
+
+        this.cena = summa;
     }
+    public double getCena() {
+        return cena;
+    }
+
+    public String getVards() {
+        return vards;
+    }
+public String sanemtInfo() {
+    return "------------------------------\n" +
+           "Pica: " + izmers + " | Mērce: " + merce + "\n" +
+           "Piedevas: " + piedevas + "\n" +
+           "Klients: " + (vards.isEmpty() ? "Nav norādīts" : vards) + "\n" +
+           "Tālr: " + (talrunis.isEmpty() ? "Nav norādīts" : talrunis) + "\n" +
+           "Adrese: " + (adrese.isEmpty() ? "Nav norādīts" : adrese) + "\n" +
+           "Summa: " + String.format("%.2f", cena) + " EUR";
+}
+public String failaFormata() {
+    return vards + ";" + adrese + ";" + talrunis + ";" + izmers + ";" + piedevas + ";" + merce + ";" + cena;
+}
 }
