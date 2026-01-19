@@ -91,6 +91,6 @@ public class RainingPanel extends JPanel implements ActionListener {
         for (Drop drop : drops) {
             drop.update(getHeight(), getWidth());
         }
-        repaint(); // Pārzīmēt ekrānu
+        repaint();
     }
 }

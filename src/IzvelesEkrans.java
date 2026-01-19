@@ -81,7 +81,7 @@ public class IzvelesEkrans extends JFrame {
         btn.setBackground(bg);
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
-        // Balta apmale
+       
         btn.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(Color.WHITE, 2),
             BorderFactory.createEmptyBorder(10, 20, 10, 20)

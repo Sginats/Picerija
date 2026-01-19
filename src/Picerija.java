@@ -39,7 +39,7 @@ public class Picerija extends JFrame implements ActionListener {
         this.vaiPiegade = vaiPiegade;
 
         String rezims = vaiPiegade ? "PIEGADE" : "UZ VIETAS";
-        setTitle("Picerija - Vadibas Panelis (" + rezims + ")");
+        setTitle("Picerija (" + rezims + ")");
         setSize(1280, 850);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -116,14 +116,11 @@ public class Picerija extends JFrame implements ActionListener {
         tfVards = new JTextField();
         addSidebarComponent(sidebar, gbc, row++, tfVards);
 
-        // --- ADRESE UN TALRUNIS ---
-        // Inicializējam ar "-" pēc noklusējuma (lai objekta izveide nestrādātu kļūdaini)
         tfAdrese = new JTextField("-");
         tfTalrunis = new JTextField("-");
 
-        // Pievienojam vizuāli TIKAI tad, ja ir piegāde
         if (vaiPiegade) {
-            tfAdrese.setText(""); // Notīrām noklusējuma vērtību ievadei
+            tfAdrese.setText(""); 
             tfTalrunis.setText("");
 
             addSidebarLabel(sidebar, gbc, row++, "Adrese:");
