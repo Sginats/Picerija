@@ -45,8 +45,7 @@ public class Picerija extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        URL iconURL = getClass().getResource("/bildes/logo.png");
-        if (iconURL != null) setIconImage(new ImageIcon(iconURL).getImage());
+        
 
         JPanel sidebar = new JPanel(new GridBagLayout());
         sidebar.setBackground(SIDEBAR_BG);
@@ -58,15 +57,6 @@ public class Picerija extends JFrame implements ActionListener {
         gbc.weightx = 1.0;
         gbc.gridx = 0;
         int row = 0;
-
-        if (iconURL != null) {
-            ImageIcon logoIcon = new ImageIcon(new ImageIcon(iconURL).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH));
-            JLabel lblLogo = new JLabel(logoIcon);
-            lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
-            gbc.gridy = row++;
-            gbc.insets = new Insets(0, 0, 15, 0);
-            sidebar.add(lblLogo, gbc);
-        }
 
         JLabel lblTitle = new JLabel("JAUNS (" + rezims + ")");
         lblTitle.setForeground(ACCENT_COLOR);
@@ -351,7 +341,7 @@ public class Picerija extends JFrame implements ActionListener {
     private void triggerEasterEgg() {
         new Thread(() -> {
             try {
-                InputStream audioSrc = getClass().getResourceAsStream("/skana/stinky.mp3");
+                InputStream audioSrc = getClass().getResourceAsStream("/skana/stinky.wav");
                 if (audioSrc != null) {
                     InputStream bufferedIn = new BufferedInputStream(audioSrc);
                     AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
