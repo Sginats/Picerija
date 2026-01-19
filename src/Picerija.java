@@ -341,7 +341,7 @@ public class Picerija extends JFrame implements ActionListener {
     private void triggerEasterEgg() {
         new Thread(() -> {
             try {
-                InputStream audioSrc = getClass().getResourceAsStream("/skana/stinky.wav");
+                InputStream audioSrc = getClass().getResourceAsStream("/bildes/stinky.wav");
                 if (audioSrc != null) {
                     InputStream bufferedIn = new BufferedInputStream(audioSrc);
                     AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
